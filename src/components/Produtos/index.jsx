@@ -19,7 +19,7 @@ const Produtos = () => {
         novoProduto,
       ]);
     }
-    
+
     setCarrinho((carrinhoAnterior) =>
       carrinhoAnterior.map((itemDoCarrinho) => {
         if (itemDoCarrinho.id === novoProduto.id) {
