@@ -24,9 +24,9 @@ export const UseCarrinhoContext = () => {
       ]);
     }
 
-    const carrinhoAtualizado = mudarQuantidade(novoProduto.id, 1)
+    const carrinhoAtualizado = mudarQuantidade(novoProduto.id, 1);
 
-    setCarrinho( [...carrinhoAtualizado] );
+    setCarrinho([...carrinhoAtualizado]);
   }
 
   function removerProduto(id) {
@@ -37,9 +37,14 @@ export const UseCarrinhoContext = () => {
         carrinhoAnterior.filter((itemDoCarrinho) => itemDoCarrinho.id !== id)
       );
     }
-    const carrinhoAtualizado = mudarQuantidade(id, -1)
+    const carrinhoAtualizado = mudarQuantidade(id, -1);
 
-    setCarrinho( [...carrinhoAtualizado] );
+    setCarrinho([...carrinhoAtualizado]);
+  }
+
+  function removerProdutoCarrinho(id) {
+    const produto = carrinho.filter((itemDoCarrinho) => itemDoCarrinho.id !== id);
+    setCarrinho(produto)
   }
 
   return {
@@ -47,5 +52,6 @@ export const UseCarrinhoContext = () => {
     setCarrinho,
     adicionarProduto,
     removerProduto,
+    removerProdutoCarrinho,
   };
 };
