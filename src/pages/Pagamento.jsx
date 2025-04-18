@@ -30,7 +30,13 @@ const Pagamento = () => {
     
     switch (name) {
       case 'numero':
-        if (!/^\d*$/.test(value)) return;
+        if (!/^\d*$/.test(value.replace(/\s/g, ''))) return;
+        // Adiciona espaço a cada 4 dígitos
+        const numeroFormatado = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
+        return setCardData(prev => ({
+          ...prev,
+          [name]: numeroFormatado
+        }));
         break;
       case 'cvc':
         if (!/^\d*$/.test(value)) return;
