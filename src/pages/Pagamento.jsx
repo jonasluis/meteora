@@ -5,7 +5,7 @@ import Titulo from "@/components/Titulo";
 import { UseCarrinhoContext } from "@/hooks/useCarrinhoContext";
 import { formatadorMoeda } from "@/utils/formatadorMoeda";
 import Botao from "@/components/Botao";
-import QRCode from "qrcode.react";
+import { QRCode } from "qrcode.react";
 
 const Pagamento = () => {
   const { valorTotal } = UseCarrinhoContext();
