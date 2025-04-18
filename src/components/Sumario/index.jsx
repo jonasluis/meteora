@@ -21,6 +21,7 @@ const Sumario = () => {
           variant="primary"
           className="border-0"
           aria-label="Finalizar compra"
+          onClick={() => navigate("/pagamento")}
         >
           Finalizar compra
         </Botao>
