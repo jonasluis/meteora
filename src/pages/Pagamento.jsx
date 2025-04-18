@@ -27,6 +27,28 @@ const Pagamento = () => {
 
   const handleCardInputChange = (e) => {
     const { name, value } = e.target;
+    
+    switch (name) {
+      case 'numero':
+        if (!/^\d*$/.test(value)) return;
+        break;
+      case 'cvc':
+        if (!/^\d*$/.test(value)) return;
+        break;
+      case 'validade':
+        if (!/^\d*$/.test(value.replace('/', ''))) return;
+        if (value.length === 2 && !value.includes('/') && cardData.validade.length !== 3) {
+          return setCardData(prev => ({
+            ...prev,
+            [name]: value + '/'
+          }));
+        }
+        break;
+      case 'nome':
+        if (!/^[A-Za-z\s]*$/.test(value)) return;
+        break;
+    }
+    
     setCardData(prev => ({
       ...prev,
       [name]: value
