@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import BarraNavegacao from "@/components/BarraNavegacao";
 import Titulo from "@/components/Titulo";
@@ -6,16 +5,17 @@ import { UseCarrinhoContext } from "@/hooks/useCarrinhoContext";
 import { formatadorMoeda } from "@/utils/formatadorMoeda";
 import Botao from "@/components/Botao";
 import { QRCodeSVG } from "qrcode.react";
+import InputMask from "react-input-mask";
 
 const Pagamento = () => {
   const { valorTotal } = UseCarrinhoContext();
-  const [formaPagamento, setFormaPagamento] = useState('');
+  const [formaPagamento, setFormaPagamento] = useState("");
   const [parcelas, setParcelas] = useState(1);
   const [cardData, setCardData] = useState({
-    numero: '',
-    validade: '',
-    cvc: '',
-    nome: ''
+    numero: "",
+    validade: "",
+    cvc: "",
+    nome: "",
   });
 
   const generatePixData = () => {
@@ -27,37 +27,43 @@ const Pagamento = () => {
 
   const handleCardInputChange = (e) => {
     const { name, value } = e.target;
-    
+
     switch (name) {
-      case 'numero':
-        if (!/^\d*$/.test(value.replace(/\s/g, ''))) return;
+      case "numero":
+        // Remove espaços e valida se a entrada contém apenas números
+        const cleanedValue = value.replace(/\s/g, "");
+        if (!/^\d*$/.test(cleanedValue)) return;
+
         // Adiciona espaço a cada 4 dígitos
-        const numeroFormatado = value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
-        return setCardData(prev => ({
-          ...prev,
-          [name]: numeroFormatado
-        }));
+        const numeroFormatado = cleanedValue.replace(/(.{4})/g, "$1 ").trim();
+
+        // Atualiza o estado
+        return setCardData((prev) => ({ ...prev, [name]: numeroFormatado }));
         break;
-      case 'cvc':
+      case "cvc":
         if (!/^\d*$/.test(value)) return;
         break;
-      case 'validade':
-        if (!/^\d*$/.test(value.replace('/', ''))) return;
-        if (value.length === 2 && !value.includes('/') && cardData.validade.length !== 3) {
-          return setCardData(prev => ({
+      case "validade":
+        if (!/^\d*$/.test(value.replace("/", ""))) return;
+        if (
+          value.length === 2 &&
+          !value.includes("/") &&
+          cardData.validade.length !== 3
+        ) {
+          return setCardData((prev) => ({
             ...prev,
-            [name]: value + '/'
+            [name]: value + "/",
           }));
         }
         break;
-      case 'nome':
+      case "nome":
         if (!/^[A-Za-z\s]*$/.test(value)) return;
         break;
     }
-    
-    setCardData(prev => ({
+
+    setCardData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -69,40 +75,42 @@ const Pagamento = () => {
           Pagamento
         </Titulo>
         <div className="bg-black p-4 mb-4 text-light">
-          <h2 className="h5 mb-3">Valor total: {formatadorMoeda(valorTotal)}</h2>
-          
+          <h2 className="h5 mb-3">
+            Valor total: {formatadorMoeda(valorTotal)}
+          </h2>
+
           <div className="mb-3">
             <h3 className="h6 mb-2">Forma de Pagamento:</h3>
             <div className="d-flex gap-2">
               <Botao
-                variant={formaPagamento === 'pix' ? 'primary' : 'tertiary'}
-                onClick={() => setFormaPagamento('pix')}
+                variant={formaPagamento === "pix" ? "primary" : "tertiary"}
+                onClick={() => setFormaPagamento("pix")}
               >
                 PIX
               </Botao>
               <Botao
-                variant={formaPagamento === 'credito' ? 'primary' : 'tertiary'}
-                onClick={() => setFormaPagamento('credito')}
+                variant={formaPagamento === "credito" ? "primary" : "tertiary"}
+                onClick={() => setFormaPagamento("credito")}
               >
                 Crédito
               </Botao>
               <Botao
-                variant={formaPagamento === 'debito' ? 'primary' : 'tertiary'}
-                onClick={() => setFormaPagamento('debito')}
+                variant={formaPagamento === "debito" ? "primary" : "tertiary"}
+                onClick={() => setFormaPagamento("debito")}
               >
                 Débito
               </Botao>
             </div>
           </div>
 
-          {formaPagamento === 'pix' && (
+          {formaPagamento === "pix" && (
             <div className="text-center mb-3">
               <QRCodeSVG value={generatePixData()} size={256} />
               <p className="mt-2">Link do PIX: {generatePixData()}</p>
             </div>
           )}
 
-          {(formaPagamento === 'credito' || formaPagamento === 'debito') && (
+          {(formaPagamento === "credito" || formaPagamento === "debito") && (
             <div className="mb-3">
               <div className="mb-3">
                 <label className="form-label">Número do Cartão:</label>
@@ -112,7 +120,8 @@ const Pagamento = () => {
                   name="numero"
                   value={cardData.numero}
                   onChange={handleCardInputChange}
-                  maxLength="16"
+                  placeholder="0000 0000 0000 0000"
+                  maxLength="19" // 16 digits + 3 spaces
                 />
               </div>
               <div className="row mb-3">
@@ -150,12 +159,12 @@ const Pagamento = () => {
                   onChange={handleCardInputChange}
                 />
               </div>
-              {formaPagamento === 'credito' && (
+              {formaPagamento === "credito" && (
                 <div className="mb-3">
                   <label className="form-label">Parcelas:</label>
-                  <select 
-                    className="form-select" 
-                    value={parcelas} 
+                  <select
+                    className="form-select"
+                    value={parcelas}
                     onChange={(e) => setParcelas(Number(e.target.value))}
                   >
                     {[...Array(12)].map((_, i) => (
@@ -172,11 +181,15 @@ const Pagamento = () => {
           <Botao
             variant="primary"
             className="w-100 mt-3"
-            disabled={!formaPagamento || (
-              (formaPagamento === 'credito' || formaPagamento === 'debito') && 
-              (!cardData.numero || !cardData.validade || !cardData.cvc || !cardData.nome)
-            )}
-            onClick={() => alert('Pagamento processado!')}
+            disabled={
+              !formaPagamento ||
+              ((formaPagamento === "credito" || formaPagamento === "debito") &&
+                (!cardData.numero ||
+                  !cardData.validade ||
+                  !cardData.cvc ||
+                  !cardData.nome))
+            }
+            onClick={() => alert("Pagamento processado!")}
           >
             Confirmar Pagamento
           </Botao>
