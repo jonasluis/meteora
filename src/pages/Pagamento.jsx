@@ -5,9 +5,10 @@ import { UseCarrinhoContext } from "@/hooks/useCarrinhoContext";
 import { formatadorMoeda } from "@/utils/formatadorMoeda";
 import Botao from "@/components/Botao";
 import { QRCodeSVG } from "qrcode.react";
-import InputMask from "react-input-mask";
+import { useNavigate } from "react-router-dom";
 
 const Pagamento = () => {
+  const navigate = useNavigate();
   const { valorTotal } = UseCarrinhoContext();
   const [formaPagamento, setFormaPagamento] = useState("");
   const [parcelas, setParcelas] = useState(1);
@@ -84,7 +85,9 @@ const Pagamento = () => {
             <div className="d-flex gap-2">
               <Botao
                 variant={formaPagamento === "pix" ? "primary" : "tertiary"}
-                onClick={() => setFormaPagamento("pix")}
+                onClick={() => {
+                  setFormaPagamento("pix");
+                }}
               >
                 PIX
               </Botao>
@@ -189,7 +192,10 @@ const Pagamento = () => {
                   !cardData.cvc ||
                   !cardData.nome))
             }
-            onClick={() => alert("Pagamento processado!")}
+            onClick={() => {
+              alert("Pagamento processado!");
+              navigate("/"); // ou "/home", depende da sua rota principal
+            }}
           >
             Confirmar Pagamento
           </Botao>
