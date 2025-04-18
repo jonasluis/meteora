@@ -144,6 +144,10 @@ const Pagamento = () => {
           <Botao
             variant="primary"
             className="w-100 mt-3"
+            disabled={!formaPagamento || (
+              (formaPagamento === 'credito' || formaPagamento === 'debito') && 
+              (!cardData.numero || !cardData.validade || !cardData.cvc || !cardData.nome)
+            )}
             onClick={() => alert('Pagamento processado!')}
           >
             Confirmar Pagamento
