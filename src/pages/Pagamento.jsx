@@ -5,7 +5,7 @@ import Titulo from "@/components/Titulo";
 import { UseCarrinhoContext } from "@/hooks/useCarrinhoContext";
 import { formatadorMoeda } from "@/utils/formatadorMoeda";
 import Botao from "@/components/Botao";
-import { QRCode } from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 
 const Pagamento = () => {
   const { valorTotal } = UseCarrinhoContext();
@@ -69,7 +69,7 @@ const Pagamento = () => {
 
           {formaPagamento === 'pix' && (
             <div className="text-center mb-3">
-              <QRCode value={generatePixData()} size={256} />
+              <QRCodeSVG value={generatePixData()} size={256} />
               <p className="mt-2">Link do PIX: {generatePixData()}</p>
             </div>
           )}
